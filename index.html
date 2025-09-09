@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Tutorial HTML</title>
+</head>
+
+<body>
+    <h1>Tutorial HTML</h1>
+    <p>Mi primera Pagina</p>
+    
+    <!-- Formulario para hacer preguntas -->
+    <div style="margin: 20px; padding: 20px; border: 2px solid #ccc; border-radius: 10px;">
+        <h2>Formulario de Datos Personales</h2>
+        <form id="formularioDatos">
+            <label for="edad">¿Cuál es tu edad?</label><br><br>
+            <input type="number" id="edad" placeholder="Ingresa tu edad" style="padding: 10px; font-size: 16px; width: 200px;">
+            <br><br>
+            
+            <label for="peso">¿Cuál es tu peso en kg?</label><br><br>
+            <input type="number" id="peso" placeholder="Ingresa tu peso" step="0.1" style="padding: 10px; font-size: 16px; width: 200px;">
+            <br><br>
+            
+            <button type="button" onclick="verificarDatos()" style="padding: 10px 20px; font-size: 16px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                Verificar Datos
+            </button>
+        </form>
+    </div>
+    
+    <!-- Área para mostrar el resultado -->
+    <div id="resultado" style="margin: 20px; padding: 20px; border: 2px solid #ddd; border-radius: 10px; min-height: 50px;">
+        <p style="color: #666;">El resultado aparecerá aquí...</p>
+    </div>
+    
+    <script>
+        function verificarDatos() {
+            // Obtener los valores de los inputs
+            let edadInput = document.getElementById("edad");
+            let pesoInput = document.getElementById("peso");
+            let edad = edadInput.value;
+            let peso = pesoInput.value;
+            
+            // Convertir a números
+            let edadNumero = parseInt(edad);
+            let pesoNumero = parseFloat(peso);
+            
+            // Verificar si la edad es válida
+            if (isNaN(edadNumero) || edadNumero < 0 || edadNumero > 120) {
+                document.getElementById("resultado").innerHTML = 
+                    "<p style='color: red; font-size: 18px;'>❌ Por favor, ingrese una edad válida (0-120 años).</p>";
+                return;
+            }
+            
+            // Verificar si el peso es válido
+            if (isNaN(pesoNumero) || pesoNumero < 0 || pesoNumero > 500) {
+                document.getElementById("resultado").innerHTML = 
+                    "<p style='color: red; font-size: 18px;'>❌ Por favor, ingrese un peso válido (0-500 kg).</p>";
+                return;
+            }
+            
+            // Mostrar mensaje de redirección
+            document.getElementById("resultado").innerHTML = 
+                "<p style='color: #007bff; font-size: 18px;'>🔄 Analizando datos...</p>" +
+                "<p style='color: #666;'>Por favor espera mientras procesamos tu información.</p>";
+            
+            // Redirigir después de 2 segundos
+            setTimeout(function() {
+                // Verificar si el peso es mayor a 100 kg
+                if (pesoNumero > 100) {
+                    // Redirigir al enlace de TikTok
+                    window.open("https://www.tiktok.com/@irraverente/video/7477017852801797381?is_from_webapp=1&sender_device=pc&web_id=7546729174581593606", "_blank");
+                    
+                    // Mostrar mensaje en la página
+                    document.getElementById("resultado").innerHTML = 
+                        "<p style='color: #ff6b6b; font-size: 18px;'>🎯 ¡Peso especial detectado!</p>" +
+                        "<p style='color: #666;'>Se ha abierto un enlace especial para ti en una nueva pestaña.</p>" +
+                        "<p style='color: #666;'>Edad: " + edadNumero + " años | Peso: " + pesoNumero + " kg</p>";
+                } else {
+                    // Redirigir según la edad (comportamiento original)
+                    if (edadNumero < 18) {
+                        window.location.href = "menor.html";
+                    } else if (edadNumero >= 18 && edadNumero < 65) {
+                        window.location.href = "mayor.html";
+                    } else {
+                        window.location.href = "adulto-mayor.html";
+                    }
+                }
+            }, 2000);
+        }
+        
+        // Permitir enviar el formulario con Enter
+        document.getElementById("edad").addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                verificarDatos();
+            }
+        });
+        
+        document.getElementById("peso").addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                verificarDatos();
+            }
+        });
+    </script>
+</body>
+
+
+
+
+
+
+</html>
