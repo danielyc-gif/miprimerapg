@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Gestor de Tareas Minimalista</title>
+  <style>
+    /* Reset básico */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+        Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+      background: #ffffff;
+      color: #1d1d1f;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+      padding: 40px 20px;
+      transition: all 0.3s ease;
+    }
+
+    body.dark-mode {
+      background: #000000;
+      color: #ffffff;
+    }
+
+    .container {
+      background: rgba(255, 255, 255, 0.8); /* blanco con opacidad */
+      backdrop-filter: blur(20px); /* desenfoque de fondo */
+      -webkit-backdrop-filter: blur(20px); /* soporte Safari */
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+      border: 1px solid rgba(0, 0, 0, 0.05);
+      width: 100%;
+      max-width: 480px;
+      padding: 32px 40px;
+      transition: all 0.3s ease;
+    }
+
+    body.dark-mode .container {
+      background: rgba(0, 0, 0, 0.8);
+      box-shadow: 0 8px 24px rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    h1 {
+      font-weight: 600;
+      font-size: 2.5rem;
+      margin-bottom: 24px;
+      letter-spacing: -0.02em;
+    }
+
+    form {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    input[type="text"] {
+      flex: 1;
+      padding: 14px 20px;
+      font-size: 1rem;
+      border: 1px solid #d2d2d7;
+      border-radius: 12px;
+      background: #f5f5f7;
+      transition: all 0.3s ease;
+    }
+
+    input[type="text"]:focus {
+      outline: none;
+      border-color: #0071e3;
+      background: #fff;
+      box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.2);
+    }
+
+    body.dark-mode input[type="text"] {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.2);
+      color: #ffffff;
+    }
+
+    body.dark-mode input[type="text"]:focus {
+      background: rgba(255, 255, 255, 0.2);
+      border-color: #0071e3;
+    }
+
+    button {
+      background: #0071e3;
+      border: none;
+      border-radius: 12px;
+      color: white;
+      font-weight: 600;
+      font-size: 1rem;
+      padding: 14px 24px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      user-select: none;
+    }
+
+    button:hover {
+      background: #005bb5;
+    }
+
+    ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    li {
+      background: #f5f5f7;
+      padding: 16px 24px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 1.125rem;
+      box-shadow: inset 0 -1px 0 #d2d2d7;
+      user-select: none;
+      transition: all 0.3s ease;
+    }
+
+    body.dark-mode li {
+      background: rgba(255, 255, 255, 0.1);
+      box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.1);
+    }
+
+    li.completed {
+      color: #8e8e93;
+      text-decoration: line-through;
+    }
+
+    body.dark-mode li.completed {
+      color: #666;
+    }
+
+    .task-text {
+      flex: 1;
+      cursor: pointer;
+    }
+
+    .delete-btn {
+      background: transparent;
+      border: none;
+      color: #8e8e93;
+      font-size: 1rem;
+      cursor: pointer;
+      padding: 4px 8px;
+      user-select: none;
+      transition: all 0.3s ease;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+    }
+
+    .delete-btn:hover {
+      color: #ff3b30;
+      background: rgba(255, 59, 48, 0.1);
+      transform: scale(1.1);
+    }
+
+    body.dark-mode .delete-btn {
+      color: #8e8e93;
+    }
+
+    body.dark-mode .delete-btn:hover {
+      color: #ff6b6b;
+      background: rgba(255, 107, 107, 0.1);
+    }
+
+    .theme-toggle {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: rgba(0, 0, 0, 0.1);
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      border-radius: 50px;
+      width: 50px;
+      height: 50px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+
+    .theme-toggle:hover {
+      background: rgba(0, 0, 0, 0.2);
+      transform: scale(1.1);
+    }
+
+    body.dark-mode .theme-toggle {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    body.dark-mode .theme-toggle:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    @media (max-width: 520px) {
+      .container {
+        padding: 24px 20px;
+      }
+
+      h1 {
+        font-size: 2rem;
+      }
+
+      .theme-toggle {
+        top: 15px;
+        right: 15px;
+        width: 45px;
+        height: 45px;
+        font-size: 1.3rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <button class="theme-toggle" onclick="toggleTheme()" aria-label="Cambiar tema">
+    <span id="theme-icon">🌙</span>
+  </button>
+  
+  <main class="container" role="main" aria-label="Gestor de tareas minimalista">
+    <h1>Mis Tareas</h1>
+    <form action="/agregar" method="post" aria-label="Agregar nueva tarea">
+      <input
+        type="text"
+        name="texto_tarea"
+        placeholder="Agregar nueva tarea..."
+        aria-required="true"
+        autocomplete="off"
+      />
+      <button type="submit" aria-label="Agregar tarea">Agregar</button>
+    </form>
+    <ul aria-live="polite" aria-relevant="additions removals">
+      {% if tareas %}
+        {% for tarea in tareas %}
+          <li class="{% if tarea['hecho'] %}completed{% endif %}">
+            <span class="task-text" 
+                  tabindex="0" 
+                  role="button" 
+                  aria-pressed="{% if tarea['hecho'] %}true{% else %}false{% endif %}"
+                  onclick="window.location.href='/completar/{{ tarea['id'] }}'"
+                  onkeydown="if(event.key==='Enter'||event.key===' ') {event.preventDefault(); window.location.href='/completar/{{ tarea['id'] }}';}">
+              {{ tarea['texto'] }}
+            </span>
+            <a href="/eliminar/{{ tarea['id'] }}" 
+               class="delete-btn" 
+               aria-label="Eliminar tarea: {{ tarea['texto'] }}"
+               onclick="return confirm('¿Eliminar esta tarea?')">🗑️</a>
+          </li>
+        {% endfor %}
+      {% else %}
+        <li style="text-align: center; color: #8e8e93; font-style: italic;">
+          No hay tareas aún. ¡Agrega tu primera tarea!
+        </li>
+      {% endif %}
+    </ul>
+  </main>
+
+  <script>
+    // Cargar tema guardado o usar tema claro por defecto
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    if (savedTheme === 'dark') {
+      document.body.classList.add('dark-mode');
+      document.getElementById('theme-icon').textContent = '☀️';
+    }
+
+    function toggleTheme() {
+      const body = document.body;
+      const themeIcon = document.getElementById('theme-icon');
+      
+      if (body.classList.contains('dark-mode')) {
+        // Cambiar a modo claro
+        body.classList.remove('dark-mode');
+        themeIcon.textContent = '🌙';
+        localStorage.setItem('theme', 'light');
+      } else {
+        // Cambiar a modo oscuro
+        body.classList.add('dark-mode');
+        themeIcon.textContent = '☀️';
+        localStorage.setItem('theme', 'dark');
+      }
+    }
+
+    // Auto-focus en el input
+    document.querySelector('input[type="text"]').focus();
+  </script>
+</body>
+</html>
